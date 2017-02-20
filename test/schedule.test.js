@@ -10,6 +10,19 @@ describe('test/schedule.test.js', () => {
   let app;
   afterEach(() => app.close());
 
+  describe('schedule loader', () => {
+    it('should load extension', function* () {
+      app = mm.cluster({ baseDir: 'loader', workers: 2 });
+      yield app.ready();
+      yield sleep(5000);
+      const log = getLogContent('loader');
+      assert(contains(log, 'jsfile') === 2);
+      assert(contains(log, 'tsfile') === 0);
+      assert(contains(log, 'dotfile') === 0);
+    });
+  });
+
+
   describe('schedule type worker', () => {
     it('should support interval and cron', function* () {
       app = mm.cluster({ baseDir: 'worker', workers: 2 });
